@@ -1,16 +1,19 @@
 package com.projects.ecommercewebsite.services;
 
+import com.projects.ecommercewebsite.dtos.GenericProductDTO;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 public interface ProductService {
 
-    String getProductById(long id);
+    GenericProductDTO getProductById(long id);
 
-    String getAllProducts();
+    List<GenericProductDTO> getAllProducts();
 
     String deleteProductById(long id);
 
-    String createProduct();
+    GenericProductDTO createProduct(GenericProductDTO genericProductDTO);
 
     String updateProductById(long id);
 }

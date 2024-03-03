@@ -1,8 +1,11 @@
 package com.projects.ecommercewebsite.controllers;
 
+import com.projects.ecommercewebsite.dtos.GenericProductDTO;
 import com.projects.ecommercewebsite.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -16,12 +19,12 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public String getProductById(@PathVariable long id){
+    public GenericProductDTO getProductById(@PathVariable long id){
         return productService.getProductById(id);
     }
 
     @GetMapping("/")
-    public String getAllProducts(){
+    public List<GenericProductDTO> getAllProducts(){
         return productService.getAllProducts();
     }
 
@@ -31,8 +34,8 @@ public class ProductController {
     }
 
     @PostMapping("/")
-    public String createProduct() {
-        return productService.createProduct();
+    public GenericProductDTO createProduct(@RequestBody GenericProductDTO genericProductDTO) {
+        return productService.createProduct(genericProductDTO);
     }
 
     @PutMapping("/{id}")
