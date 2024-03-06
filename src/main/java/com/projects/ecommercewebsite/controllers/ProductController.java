@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping(value = "/products")
 public class ProductController {
 
     ProductService productService;
@@ -29,7 +29,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteProductById(@PathVariable long id) {
+    public GenericProductDTO deleteProductById(@PathVariable long id) {
         return productService.deleteProductById(id);
     }
 
@@ -39,7 +39,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public String updateProductById(@PathVariable long id) {
-        return productService.updateProductById(id);
+    public GenericProductDTO updateProductById(@PathVariable long id, @RequestBody GenericProductDTO genericProductDTO) {
+        return productService.updateProductById(genericProductDTO, id);
     }
 }

@@ -2,10 +2,14 @@ package com.projects.ecommercewebsite.services;
 
 import com.projects.ecommercewebsite.dtos.FakeStoreProductDTO;
 import com.projects.ecommercewebsite.dtos.GenericProductDTO;
+import com.projects.ecommercewebsite.exceptions.ProductDoesNotExistException;
 import org.apache.coyote.Response;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -79,12 +83,35 @@ public class FakeStoreProductServiceImpl implements ProductService{
     }
 
     @Override
-    public String deleteProductById(long id) {
-        return "Request to delete product with id :" +id;
+    public GenericProductDTO deleteProductById(long id) {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        RequestCallback requestCallback = restTemplate.acceptHeaderRequestCallback(FakeStoreProductDTO.class);
+        ResponseExtractor<ResponseEntity<FakeStoreProductDTO>> responseExtractor =
+                restTemplate.responseEntityExtractor(FakeStoreProductDTO.class);
+        ResponseEntity<FakeStoreProductDTO> responseEntity =
+                restTemplate.execute(singleProductURL, HttpMethod.DELETE, requestCallback, responseExtractor, id);
+
+        if (responseEntity.getBody() == null) {
+            throw new ProductDoesNotExistException("Product with the id "+id+" does not exist.");
+        }
+
+        return convertToGenericProductDTO(Objects.requireNonNull(responseEntity.getBody()));
     }
 
     @Override
-    public String updateProductById(long id) {
-        return "Request to update product with id :" +id;
+    public GenericProductDTO updateProductById(GenericProductDTO genericProductDTO, long id) {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        FakeStoreProductDTO fakeStoreProductDTO = convertToFakeStoreProductDTO(genericProductDTO);
+
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(fakeStoreProductDTO, FakeStoreProductDTO.class);
+        ResponseExtractor<ResponseEntity<FakeStoreProductDTO>> responseExtractor =
+                restTemplate.responseEntityExtractor(FakeStoreProductDTO.class);
+        ResponseEntity<FakeStoreProductDTO> responseEntity =
+                restTemplate.execute(singleProductURL, HttpMethod.PUT, requestCallback, responseExtractor, id);
+
+        if (responseEntity.getBody() == null) {
+            throw new ProductDoesNotExistException("Product with the id "+id+" does not exist.");
+        }
+        return convertToGenericProductDTO(Objects.requireNonNull(responseEntity.getBody()));
     }
 }
