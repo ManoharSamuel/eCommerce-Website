@@ -2,6 +2,7 @@ package com.projects.ecommercewebsite.services;
 
 import com.projects.ecommercewebsite.dtos.FakeStoreProductDTO;
 import com.projects.ecommercewebsite.dtos.GenericProductDTO;
+import com.projects.ecommercewebsite.exceptions.ProductDoesNotExistException;
 import com.projects.ecommercewebsite.thirdpartyclients.FakeStoreClient.FakeStoreClient;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class FakeStoreProductServiceImpl implements ProductService{
         genericProductDTO.setPrice(fakeStoreProductDTO.getPrice());
         genericProductDTO.setDescription(fakeStoreProductDTO.getDescription());
         genericProductDTO.setImageURL(fakeStoreProductDTO.getImage());
-        genericProductDTO.setId(fakeStoreProductDTO.getId());
+        genericProductDTO.setId(Long.valueOf(fakeStoreProductDTO.getId()));
 
         return genericProductDTO;
     }
@@ -62,12 +63,20 @@ public class FakeStoreProductServiceImpl implements ProductService{
     }
 
     @Override
-    public GenericProductDTO deleteProductById(long id) {
+    public GenericProductDTO deleteProductById(long id) throws ProductDoesNotExistException {
         return convertToGenericProductDTO(fakeStoreClient.deleteProductById(id));
     }
 
     @Override
-    public GenericProductDTO updateProductById(GenericProductDTO genericProductDTO, long id) {
+    public GenericProductDTO updateProductById(GenericProductDTO genericProductDTO, long id) 
+                                                    throws ProductDoesNotExistException {
+        FakeStoreProductDTO fakeStoreProductDTO = convertToFakeStoreProductDTO(genericProductDTO);
+        return convertToGenericProductDTO(fakeStoreClient.updateProductById(fakeStoreProductDTO, id));
+    }
+
+    @Override
+    public GenericProductDTO replaceProductById(GenericProductDTO genericProductDTO, long id) 
+                                                throws ProductDoesNotExistException {
         FakeStoreProductDTO fakeStoreProductDTO = convertToFakeStoreProductDTO(genericProductDTO);
         return convertToGenericProductDTO(fakeStoreClient.updateProductById(fakeStoreProductDTO, id));
     }

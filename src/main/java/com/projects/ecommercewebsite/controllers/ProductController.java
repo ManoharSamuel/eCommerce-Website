@@ -1,8 +1,10 @@
 package com.projects.ecommercewebsite.controllers;
 
 import com.projects.ecommercewebsite.dtos.GenericProductDTO;
+import com.projects.ecommercewebsite.exceptions.ProductDoesNotExistException;
 import com.projects.ecommercewebsite.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,12 +16,12 @@ public class ProductController {
     ProductService productService;
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(@Qualifier("SelfProductService") ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping("/{id}")
-    public GenericProductDTO getProductById(@PathVariable long id){
+    public GenericProductDTO getProductById(@PathVariable long id) throws ProductDoesNotExistException {
         return productService.getProductById(id);
     }
 
@@ -29,7 +31,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public GenericProductDTO deleteProductById(@PathVariable long id) {
+    public GenericProductDTO deleteProductById(@PathVariable long id) throws ProductDoesNotExistException {
         return productService.deleteProductById(id);
     }
 
@@ -38,8 +40,15 @@ public class ProductController {
         return productService.createProduct(genericProductDTO);
     }
 
-    @PutMapping("/{id}")
-    public GenericProductDTO updateProductById(@PathVariable long id, @RequestBody GenericProductDTO genericProductDTO) {
+    @PatchMapping("/{id}")
+    public GenericProductDTO updateProductById(@PathVariable long id, @RequestBody GenericProductDTO genericProductDTO) 
+                                                        throws ProductDoesNotExistException {
         return productService.updateProductById(genericProductDTO, id);
+    }
+
+    @PutMapping("/{id}")
+    public GenericProductDTO replaceProductById(@PathVariable long id, @RequestBody GenericProductDTO genericProductDTO) 
+                                                        throws ProductDoesNotExistException {
+        return productService.replaceProductById(genericProductDTO, id);
     }
 }

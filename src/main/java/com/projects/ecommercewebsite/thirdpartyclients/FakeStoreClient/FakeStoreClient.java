@@ -5,8 +5,6 @@ import com.projects.ecommercewebsite.exceptions.ProductDoesNotExistException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -55,7 +53,7 @@ public class FakeStoreClient {
         return Objects.requireNonNull(responseEntity.getBody());
     }
 
-    public FakeStoreProductDTO deleteProductById(long id) {
+    public FakeStoreProductDTO deleteProductById(long id) throws ProductDoesNotExistException {
         RestTemplate restTemplate = restTemplateBuilder.build();
         RequestCallback requestCallback = restTemplate.acceptHeaderRequestCallback(FakeStoreProductDTO.class);
         ResponseExtractor<ResponseEntity<FakeStoreProductDTO>> responseExtractor =
@@ -70,7 +68,7 @@ public class FakeStoreClient {
         return Objects.requireNonNull(responseEntity.getBody());
     }
 
-    public FakeStoreProductDTO updateProductById(FakeStoreProductDTO fakeStoreProductDTO, long id) {
+    public FakeStoreProductDTO updateProductById(FakeStoreProductDTO fakeStoreProductDTO, long id) throws ProductDoesNotExistException {
         RestTemplate restTemplate = restTemplateBuilder.build();
         RequestCallback requestCallback = restTemplate.httpEntityCallback(fakeStoreProductDTO, FakeStoreProductDTO.class);
         ResponseExtractor<ResponseEntity<FakeStoreProductDTO>> responseExtractor =
