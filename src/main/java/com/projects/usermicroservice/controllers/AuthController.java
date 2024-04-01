@@ -5,12 +5,12 @@ import com.projects.usermicroservice.exceptions.InvalidRequestException;
 import com.projects.usermicroservice.exceptions.UserAlreadyExistsException;
 import com.projects.usermicroservice.exceptions.UserDetailsDoesNotMatchException;
 import com.projects.usermicroservice.exceptions.UserDoesNotExistException;
-import com.projects.usermicroservice.models.SessionStatus;
 import com.projects.usermicroservice.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
 @RestController
 @RequestMapping("/auth")
@@ -31,7 +31,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestBody LogoutRequestDTO logoutRequestDTO) 
             throws InvalidRequestException {
-        return authService.logout(logoutRequestDTO.getToken(), logoutRequestDTO.getUserId());
+        return authService.logout(logoutRequestDTO.getToken());
     }
     
     @PostMapping("/signUp")
@@ -41,7 +41,7 @@ public class AuthController {
     }
     
     @PostMapping("/validate")
-    public ResponseEntity<SessionStatus> validateToken(@RequestBody ValidateTokenRequestDTO validateTokenRequestDTO) throws InvalidRequestException {
-        return authService.validateToken(validateTokenRequestDTO.getToken(), validateTokenRequestDTO.getUserId());
+    public ResponseEntity<UserDTO> validateToken(@RequestBody ValidateTokenRequestDTO validateTokenRequestDTO) throws InvalidRequestException {
+        return authService.validateToken(validateTokenRequestDTO.getToken());
     }
 }

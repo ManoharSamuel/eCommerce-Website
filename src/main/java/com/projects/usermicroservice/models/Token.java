@@ -2,17 +2,17 @@ package com.projects.usermicroservice.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
-import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Getter
 @Setter
 @Entity
-public class Session extends BaseModel{
-    private String token;
-    private Date expiringAt;
+public class Token extends BaseModel{
+    private String value;
     @ManyToOne
     private User user;
-    private SessionStatus sessionStatus;
+    private Date expiringAt;
 }

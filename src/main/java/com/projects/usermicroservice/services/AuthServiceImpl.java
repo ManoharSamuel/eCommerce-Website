@@ -5,31 +5,37 @@ import com.projects.usermicroservice.exceptions.InvalidRequestException;
 import com.projects.usermicroservice.exceptions.UserAlreadyExistsException;
 import com.projects.usermicroservice.exceptions.UserDetailsDoesNotMatchException;
 import com.projects.usermicroservice.exceptions.UserDoesNotExistException;
-import com.projects.usermicroservice.models.Session;
-import com.projects.usermicroservice.models.SessionStatus;
+import com.projects.usermicroservice.models.Token;
 import com.projects.usermicroservice.models.User;
-import com.projects.usermicroservice.repositories.SessionRepository;
+import com.projects.usermicroservice.repositories.TokenRepository;
 import com.projects.usermicroservice.repositories.UserRepository;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.MacAlgorithm;
+import org.flywaydb.core.internal.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.util.MultiValueMapAdapter;
+import org.springframework.web.bind.support.SessionStatus;
+
+import javax.crypto.SecretKey;
 
 @Service(value = "AuthServiceImpl")
 public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
-    private final SessionRepository sessionRepository;
+    private final TokenRepository tokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, SessionRepository sessionRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
-        this.sessionRepository = sessionRepository;
+        this.tokenRepository = tokenRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
     
@@ -52,19 +58,42 @@ public class AuthServiceImpl implements AuthService{
         if (!user.getEmail().equals(email) || !bCryptPasswordEncoder.matches(password, user.getPassword())) {
             throw new UserDetailsDoesNotMatchException("Invalid email or password. Please try again.");
         }
+
+        MacAlgorithm alg = Jwts.SIG.HS256;
+        SecretKey key = alg.key().build();
+
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("email", user.getEmail());
+        jsonMap.put("roles", List.of(user.getRoles()));
+        jsonMap.put("createdAt", new Date());
+        jsonMap.put("expiryAt", DateUtils.addDaysToDate(new Date(), 30));
+        
+        String jws = Jwts.builder().claims(jsonMap).signWith(key, alg).compact();
+
+        Token token = new Token();
+        token.setValue(jws);
+        token.setUser(user);
+        token.setExpiringAt(DateUtils.addDaysToDate(new Date(), 30));
+        token.setDeleted(false);
+        tokenRepository.save(token);
         
         UserDTO userDTO = getUserDTOFromUser(user);
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+        MultiValueMapAdapter<String, String> headers = new MultiValueMapAdapter<>(new HashMap<>());
+        headers.add(HttpHeaders.SET_COOKIE, "auth-token:"+jws);
+        
+        return new ResponseEntity<>(userDTO, headers, HttpStatus.OK);
     }
-    
-    public ResponseEntity<Void> logout(String token, long userId) throws InvalidRequestException {
-        Optional<Session> sessionOptional = sessionRepository.findByTokenAndUserId(token, userId);
-        if (sessionOptional.isEmpty()) {
+
+
+
+    public ResponseEntity<Void> logout(String token) throws InvalidRequestException {
+        Optional<Token> tokenOptional = tokenRepository.findByValueAndDeletedEquals(token, false);
+        if (tokenOptional.isEmpty()) {
             throw new InvalidRequestException("Invalid Request");
         }
-        Session session = sessionOptional.get();
-        session.setSessionStatus(SessionStatus.INACTIVE);
-        sessionRepository.save(session);
+        Token tokenOne = tokenOptional.get();
+        tokenOne.setDeleted(true);
+        tokenRepository.save(tokenOne);
         
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -82,24 +111,21 @@ public class AuthServiceImpl implements AuthService{
         
         return new ResponseEntity<>(getUserDTOFromUser(user1), HttpStatus.OK);
     }
-    
-    public ResponseEntity<SessionStatus> validateToken(String token, long userId) throws InvalidRequestException {
-        Optional<Session> sessionOptional = sessionRepository.findByTokenAndUserId(token, userId);
-        if (sessionOptional.isEmpty()) {
+
+
+    public ResponseEntity<UserDTO> validateToken(String token) throws InvalidRequestException {
+        Optional<Token> tokenOptional = tokenRepository.
+                findByValueAndDeletedEqualsAndExpiringAtGreaterThan(token, false, new Date());
+        if (tokenOptional.isEmpty()) {
             throw new InvalidRequestException("Invalid Request");
         }
-        Session session = sessionOptional.get();
-        if (session.getSessionStatus().equals(SessionStatus.INACTIVE)) {
-            return new ResponseEntity<>(SessionStatus.INACTIVE, HttpStatus.OK);
-        }
-        
-        Date currentTime = new Date();
-        if (session.getExpiringAt().before(currentTime)) {
-            session.setSessionStatus(SessionStatus.INACTIVE);
-            sessionRepository.save(session);
-            return new ResponseEntity<>(SessionStatus.INACTIVE, HttpStatus.OK);
-        }
+        Token token1 = tokenOptional.get();
+        User user = token1.getUser();
+        UserDTO userDTO = new UserDTO();
+        userDTO.setRoles(user.getRoles());
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
 
-        return new ResponseEntity<>(SessionStatus.ACTIVE, HttpStatus.OK);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 }
