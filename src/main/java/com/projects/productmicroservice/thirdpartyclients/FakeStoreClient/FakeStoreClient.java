@@ -1,10 +1,11 @@
-package com.projects.ecommercewebsite.thirdpartyclients.FakeStoreClient;
+package com.projects.productmicroservice.thirdpartyclients.FakeStoreClient;
 
-import com.projects.ecommercewebsite.dtos.FakeStoreProductDTO;
-import com.projects.ecommercewebsite.exceptions.ProductDoesNotExistException;
+import com.projects.productmicroservice.dtos.FakeStoreProductDTO;
+import com.projects.productmicroservice.exceptions.ProductDoesNotExistException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;

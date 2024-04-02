@@ -1,4 +1,4 @@
-package com.projects.ecommercewebsite.dtos;
+package com.projects.productmicroservice.dtos;
 
 import lombok.Getter;
 import lombok.Setter;

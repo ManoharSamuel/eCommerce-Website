@@ -1,4 +1,4 @@
-package com.projects.ecommercewebsite.exceptions;
+package com.projects.productmicroservice.exceptions;
 
 
 //@ResponseStatus(HttpStatus.NOT_FOUND)

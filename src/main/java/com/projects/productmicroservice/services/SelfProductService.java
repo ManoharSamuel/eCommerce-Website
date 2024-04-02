@@ -1,14 +1,15 @@
-package com.projects.ecommercewebsite.services;
+package com.projects.productmicroservice.services;
 
-import com.projects.ecommercewebsite.dtos.GenericProductDTO;
-import com.projects.ecommercewebsite.exceptions.ProductDoesNotExistException;
-import com.projects.ecommercewebsite.models.Category;
-import com.projects.ecommercewebsite.models.Product;
-import com.projects.ecommercewebsite.repositories.CategoryRepository;
-import com.projects.ecommercewebsite.repositories.ProductRepository;
+import com.projects.productmicroservice.dtos.GenericProductDTO;
+import com.projects.productmicroservice.exceptions.ProductDoesNotExistException;
+import com.projects.productmicroservice.models.Category;
+import com.projects.productmicroservice.models.Product;
+import com.projects.productmicroservice.repositories.CategoryRepository;
+import com.projects.productmicroservice.repositories.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

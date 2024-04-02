@@ -1,9 +1,9 @@
-package com.projects.ecommercewebsite.controllers;
+package com.projects.productmicroservice.controllers;
 
-import com.projects.ecommercewebsite.exceptions.CategoryDoesNotExistException;
-import com.projects.ecommercewebsite.models.Category;
-import com.projects.ecommercewebsite.services.CategoryService;
+import com.projects.productmicroservice.exceptions.CategoryDoesNotExistException;
+import com.projects.productmicroservice.services.CategoryService;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,8 +1,8 @@
-package com.projects.ecommercewebsite.services;
+package com.projects.productmicroservice.services;
 
-import com.projects.ecommercewebsite.exceptions.CategoryDoesNotExistException;
-import com.projects.ecommercewebsite.models.Category;
-import com.projects.ecommercewebsite.repositories.CategoryRepository;
+import com.projects.productmicroservice.exceptions.CategoryDoesNotExistException;
+import com.projects.productmicroservice.models.Category;
+import com.projects.productmicroservice.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

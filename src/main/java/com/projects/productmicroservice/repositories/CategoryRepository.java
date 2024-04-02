@@ -1,6 +1,6 @@
-package com.projects.ecommercewebsite.repositories;
+package com.projects.productmicroservice.repositories;
 
-import com.projects.ecommercewebsite.models.Category;
+import com.projects.productmicroservice.models.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,8 @@
-package com.projects.ecommercewebsite.controllers;
+package com.projects.productmicroservice.controllers;
 
-import com.projects.ecommercewebsite.dtos.ExceptionDTO;
-import com.projects.ecommercewebsite.exceptions.CategoryDoesNotExistException;
-import com.projects.ecommercewebsite.exceptions.ProductDoesNotExistException;
+import com.projects.productmicroservice.dtos.ExceptionDTO;
+import com.projects.productmicroservice.exceptions.CategoryDoesNotExistException;
+import com.projects.productmicroservice.exceptions.ProductDoesNotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

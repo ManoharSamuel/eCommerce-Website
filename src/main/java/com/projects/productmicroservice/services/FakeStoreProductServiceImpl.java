@@ -1,14 +1,15 @@
-package com.projects.ecommercewebsite.services;
+package com.projects.productmicroservice.services;
 
-import com.projects.ecommercewebsite.dtos.FakeStoreProductDTO;
-import com.projects.ecommercewebsite.dtos.GenericProductDTO;
-import com.projects.ecommercewebsite.exceptions.ProductDoesNotExistException;
-import com.projects.ecommercewebsite.thirdpartyclients.FakeStoreClient.FakeStoreClient;
+import com.projects.productmicroservice.dtos.FakeStoreProductDTO;
+import com.projects.productmicroservice.dtos.GenericProductDTO;
+import com.projects.productmicroservice.exceptions.ProductDoesNotExistException;
+import com.projects.productmicroservice.thirdpartyclients.FakeStoreClient.FakeStoreClient;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("FakeStoreProductServiceImpl")
 public class FakeStoreProductServiceImpl implements ProductService{
     private final FakeStoreClient fakeStoreClient;
     public FakeStoreProductServiceImpl(FakeStoreClient fakeStoreClient) {

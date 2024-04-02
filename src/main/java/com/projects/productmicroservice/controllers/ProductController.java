@@ -1,8 +1,8 @@
-package com.projects.ecommercewebsite.controllers;
+package com.projects.productmicroservice.controllers;
 
-import com.projects.ecommercewebsite.dtos.GenericProductDTO;
-import com.projects.ecommercewebsite.exceptions.ProductDoesNotExistException;
-import com.projects.ecommercewebsite.services.ProductService;
+import com.projects.productmicroservice.dtos.GenericProductDTO;
+import com.projects.productmicroservice.exceptions.ProductDoesNotExistException;
+import com.projects.productmicroservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;

@@ -1,9 +1,8 @@
-package com.projects.ecommercewebsite.services;
+package com.projects.productmicroservice.services;
 
-import com.projects.ecommercewebsite.dtos.GenericProductDTO;
-import com.projects.ecommercewebsite.exceptions.ProductDoesNotExistException;
+import com.projects.productmicroservice.dtos.GenericProductDTO;
+import com.projects.productmicroservice.exceptions.ProductDoesNotExistException;
 import java.util.List;
-import org.springframework.web.bind.annotation.*;
 
 public interface ProductService {
 
