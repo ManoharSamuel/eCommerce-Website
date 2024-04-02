@@ -1,4 +1,4 @@
-package com.projects.ecommercewebsite.controllerstest;
+package com.projects.productmicroservice.controllerstest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
