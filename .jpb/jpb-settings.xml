@@ -5,7 +5,11 @@
     <persistence-units>
       <persistence-unit name="Default">
         <packages>
+<<<<<<< HEAD
           <package value="com.projects.usermicroservice" />
+=======
+          <package value="com.projects.paymentmicroservice" />
+>>>>>>> payment-micro-service/master
         </packages>
       </persistence-unit>
     </persistence-units>
