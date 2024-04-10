@@ -2,6 +2,8 @@ package com.projects.productmicroservice.services;
 
 import com.projects.productmicroservice.dtos.GenericProductDTO;
 import com.projects.productmicroservice.exceptions.ProductDoesNotExistException;
+import com.projects.productmicroservice.models.Product;
+
 import java.util.List;
 
 public interface ProductService {
@@ -13,5 +15,5 @@ public interface ProductService {
     GenericProductDTO updateProductById(GenericProductDTO genericProductDTO, long id) throws ProductDoesNotExistException;
     GenericProductDTO replaceProductById(GenericProductDTO genericProductDTO, long id) throws ProductDoesNotExistException;
 
-    
+    GenericProductDTO convertToGenericProductDTO(Product product);
 }

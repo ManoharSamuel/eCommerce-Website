@@ -3,7 +3,6 @@ package com.projects.productmicroservice.controllers;
 import com.projects.productmicroservice.exceptions.CategoryDoesNotExistException;
 import com.projects.productmicroservice.services.CategoryService;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;

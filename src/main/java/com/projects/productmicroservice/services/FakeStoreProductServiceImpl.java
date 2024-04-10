@@ -3,10 +3,10 @@ package com.projects.productmicroservice.services;
 import com.projects.productmicroservice.dtos.FakeStoreProductDTO;
 import com.projects.productmicroservice.dtos.GenericProductDTO;
 import com.projects.productmicroservice.exceptions.ProductDoesNotExistException;
+import com.projects.productmicroservice.models.Product;
 import com.projects.productmicroservice.thirdpartyclients.FakeStoreClient.FakeStoreClient;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 
 @Service("FakeStoreProductServiceImpl")
@@ -80,5 +80,10 @@ public class FakeStoreProductServiceImpl implements ProductService{
                                                 throws ProductDoesNotExistException {
         FakeStoreProductDTO fakeStoreProductDTO = convertToFakeStoreProductDTO(genericProductDTO);
         return convertToGenericProductDTO(fakeStoreClient.updateProductById(fakeStoreProductDTO, id));
+    }
+
+    @Override
+    public GenericProductDTO convertToGenericProductDTO(Product product) {
+        return null;
     }
 }

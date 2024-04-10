@@ -9,7 +9,6 @@ import com.projects.productmicroservice.repositories.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ public class SelfProductService implements ProductService{
         this.categoryRepository = categoryRepository;
     }
 
-    private GenericProductDTO convertToGenericProductDTO(Product product) {
+    public GenericProductDTO convertToGenericProductDTO(Product product) {
         GenericProductDTO genericProductDTO = new GenericProductDTO();
 
         genericProductDTO.setCategoryName(product.getCategory().getName());
