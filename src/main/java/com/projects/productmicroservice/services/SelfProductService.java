@@ -16,11 +16,15 @@ import org.springframework.stereotype.Service;
 public class SelfProductService implements ProductService{
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    //private final ProductOpenSearchRepository productOpenSearchRepository;
 
     @Autowired
-    public SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository
+                              //ProductOpenSearchRepository productOpenSearchRepository
+                              ) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        //this.productOpenSearchRepository = productOpenSearchRepository;
     }
 
     public GenericProductDTO convertToGenericProductDTO(Product product) {
@@ -91,6 +95,8 @@ public class SelfProductService implements ProductService{
         
         Product product = convertToProduct(genericProductDTO);
         product.setCategory(categoryOfProduct);
+        
+        //productOpenSearchRepository.save(product);
         
         return convertToGenericProductDTO(productRepository.save(product));
     }
