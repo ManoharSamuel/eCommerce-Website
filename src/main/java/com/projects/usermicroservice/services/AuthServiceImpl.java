@@ -1,5 +1,7 @@
 package com.projects.usermicroservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projects.usermicroservice.dtos.*;
 import com.projects.usermicroservice.exceptions.InvalidRequestException;
 import com.projects.usermicroservice.exceptions.UserAlreadyExistsException;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMapAdapter;
@@ -31,12 +34,18 @@ public class AuthServiceImpl implements AuthService{
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository, TokenRepository tokenRepository, 
+                           BCryptPasswordEncoder bCryptPasswordEncoder, KafkaTemplate<String, String> kafkaTemplate,
+                           ObjectMapper objectMapper) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.kafkaTemplate = kafkaTemplate;
+        this.objectMapper = objectMapper;
     }
     
     private UserDTO getUserDTOFromUser(User user) {
@@ -108,6 +117,22 @@ public class AuthServiceImpl implements AuthService{
         user.setName(name);
         user.setPassword(bCryptPasswordEncoder.encode(password));
         User user1 = userRepository.save(user);
+        
+        SendEmailEventDTO sendEmailEventDTO = new SendEmailEventDTO();
+        sendEmailEventDTO.setTo(email);
+        sendEmailEventDTO.setFrom("testsenderemail7@gmail.com");
+        sendEmailEventDTO.setSubject("Welcome to Scaler");
+        sendEmailEventDTO.setEmailBody("Thanks for signing up with Scaler. " +
+                "Hope you have a wonderful upskilling journey.");
+
+        try {
+            kafkaTemplate.send(
+                    "sendEmail",
+                    objectMapper.writeValueAsString(sendEmailEventDTO)
+            );
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         
         return new ResponseEntity<>(getUserDTOFromUser(user1), HttpStatus.OK);
     }

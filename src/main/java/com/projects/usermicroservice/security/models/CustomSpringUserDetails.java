@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.projects.usermicroservice.models.Role;
 import com.projects.usermicroservice.models.User;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -22,7 +24,12 @@ public class CustomSpringUserDetails implements UserDetails {
     private boolean isCredentialsNonExpired;
     private boolean isEnabled;
     private List<CustomGrantedAuthority> authorities;
+    @Setter
+    @Getter
+    private Long userId;
+
     
+
     public CustomSpringUserDetails() {
         
     }
