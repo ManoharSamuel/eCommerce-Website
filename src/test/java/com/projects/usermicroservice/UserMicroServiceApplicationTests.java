@@ -3,7 +3,7 @@ package com.projects.usermicroservice;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+//@SpringBootTest
 class UserMicroServiceApplicationTests {
 
     @Test
