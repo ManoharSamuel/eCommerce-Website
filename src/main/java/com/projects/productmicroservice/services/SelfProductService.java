@@ -9,7 +9,6 @@ import com.projects.productmicroservice.repositories.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +16,18 @@ import org.springframework.stereotype.Service;
 public class SelfProductService implements ProductService{
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    //private final ProductOpenSearchRepository productOpenSearchRepository;
 
     @Autowired
-    public SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository
+                              //ProductOpenSearchRepository productOpenSearchRepository
+                              ) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        //this.productOpenSearchRepository = productOpenSearchRepository;
     }
 
-    private GenericProductDTO convertToGenericProductDTO(Product product) {
+    public GenericProductDTO convertToGenericProductDTO(Product product) {
         GenericProductDTO genericProductDTO = new GenericProductDTO();
 
         genericProductDTO.setCategoryName(product.getCategory().getName());
@@ -92,6 +95,8 @@ public class SelfProductService implements ProductService{
         
         Product product = convertToProduct(genericProductDTO);
         product.setCategory(categoryOfProduct);
+        
+        //productOpenSearchRepository.save(product);
         
         return convertToGenericProductDTO(productRepository.save(product));
     }

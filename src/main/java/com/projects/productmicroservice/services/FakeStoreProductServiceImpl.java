@@ -3,17 +3,20 @@ package com.projects.productmicroservice.services;
 import com.projects.productmicroservice.dtos.FakeStoreProductDTO;
 import com.projects.productmicroservice.dtos.GenericProductDTO;
 import com.projects.productmicroservice.exceptions.ProductDoesNotExistException;
+import com.projects.productmicroservice.models.Product;
 import com.projects.productmicroservice.thirdpartyclients.FakeStoreClient.FakeStoreClient;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service("FakeStoreProductServiceImpl")
 public class FakeStoreProductServiceImpl implements ProductService{
     private final FakeStoreClient fakeStoreClient;
-    public FakeStoreProductServiceImpl(FakeStoreClient fakeStoreClient) {
+    private final RedisTemplate<String, Object> redisTemplate;
+    public FakeStoreProductServiceImpl(FakeStoreClient fakeStoreClient, RedisTemplate<String, Object> redisTemplate) {
         this.fakeStoreClient = fakeStoreClient;
+        this.redisTemplate = redisTemplate;
     }
 
     private GenericProductDTO convertToGenericProductDTO(FakeStoreProductDTO fakeStoreProductDTO) {
@@ -42,7 +45,12 @@ public class FakeStoreProductServiceImpl implements ProductService{
     }
     @Override
     public GenericProductDTO getProductById(long id) {
-        return convertToGenericProductDTO(fakeStoreClient.getProductById(id));
+        FakeStoreProductDTO fakeStoreProductDTO = (FakeStoreProductDTO) redisTemplate.opsForHash().get("PRODUCTS", id);
+        if (fakeStoreProductDTO == null) {
+            fakeStoreProductDTO = fakeStoreClient.getProductById(id);
+            redisTemplate.opsForHash().put("PRODUCTS", id, fakeStoreProductDTO);
+        }
+        return convertToGenericProductDTO(fakeStoreProductDTO);
     }
 
 
@@ -80,5 +88,10 @@ public class FakeStoreProductServiceImpl implements ProductService{
                                                 throws ProductDoesNotExistException {
         FakeStoreProductDTO fakeStoreProductDTO = convertToFakeStoreProductDTO(genericProductDTO);
         return convertToGenericProductDTO(fakeStoreClient.updateProductById(fakeStoreProductDTO, id));
+    }
+
+    @Override
+    public GenericProductDTO convertToGenericProductDTO(Product product) {
+        return null;
     }
 }

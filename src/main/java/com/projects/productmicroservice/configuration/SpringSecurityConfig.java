@@ -15,8 +15,8 @@ public class SpringSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/products/{id}").authenticated()
-                        .requestMatchers("/products/").hasAnyAuthority("SCOPE_ADMIN")
+                        //.requestMatchers("/products/{id}").authenticated()
+                        //.requestMatchers("/products/").hasAnyAuthority("SCOPE_ADMIN")
                         .anyRequest().permitAll()
                 ).cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
