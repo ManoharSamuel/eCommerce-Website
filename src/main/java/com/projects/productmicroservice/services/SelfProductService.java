@@ -4,6 +4,7 @@ import com.projects.productmicroservice.dtos.GenericProductDTO;
 import com.projects.productmicroservice.exceptions.ProductDoesNotExistException;
 import com.projects.productmicroservice.models.Category;
 import com.projects.productmicroservice.models.Product;
+import com.projects.productmicroservice.opensearchrepositories.ProductOpenSearchRepository;
 import com.projects.productmicroservice.repositories.CategoryRepository;
 import com.projects.productmicroservice.repositories.ProductRepository;
 import java.util.ArrayList;
@@ -16,15 +17,15 @@ import org.springframework.stereotype.Service;
 public class SelfProductService implements ProductService{
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    //private final ProductOpenSearchRepository productOpenSearchRepository;
+    private final ProductOpenSearchRepository productOpenSearchRepository;
 
     @Autowired
-    public SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository
-                              //ProductOpenSearchRepository productOpenSearchRepository
+    public SelfProductService(ProductRepository productRepository, CategoryRepository categoryRepository,
+                              ProductOpenSearchRepository productOpenSearchRepository
                               ) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        //this.productOpenSearchRepository = productOpenSearchRepository;
+        this.productOpenSearchRepository = productOpenSearchRepository;
     }
 
     public GenericProductDTO convertToGenericProductDTO(Product product) {
@@ -96,9 +97,11 @@ public class SelfProductService implements ProductService{
         Product product = convertToProduct(genericProductDTO);
         product.setCategory(categoryOfProduct);
         
-        //productOpenSearchRepository.save(product);
+        product = productRepository.save(product);
         
-        return convertToGenericProductDTO(productRepository.save(product));
+        productOpenSearchRepository.save(product);
+        
+        return convertToGenericProductDTO(product);
     }
 
     private Category findOrCreateCategory(GenericProductDTO genericProductDTO) {
