@@ -14,11 +14,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 public class BaseModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @CreatedDate
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date createdAt;
     @LastModifiedDate
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date updatedAt;
 }
